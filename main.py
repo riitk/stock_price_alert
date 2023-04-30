@@ -2,25 +2,25 @@ import requests
 import smtplib
 
 ##Email constants
-MY_EMAIL = "ritiksuniljain@gmail.com"
-PASSWORD = "fjiqjihbqojanzbq"
-RECEVIVER_EMAIL = "ritikjain7350@gmail.com"
+MY_EMAIL = "SENDER_EMAIL"               #Add Sender's/Your's Email Address
+PASSWORD = "SENDER_PASSWORD"            #Add Sender's/Your's Password
+RECEVIVER_EMAIL = "RECEVIVER_EMAIL"
 
 
 ## STOCK CONSTANTS
+REQUIRED_CHANGE = 5                     #Percent Change after which to send email
 STOCK = "TSLA"
 COMPANY_NAME = "Tesla Inc"
-STOCK_API_KEY = "IM7KP9WKXM2EW5YH"
+STOCK_API_KEY = "XXXXXXXXX"             #Your Alphavantage API KEY
 AVA_ENDPOINT = "https://www.alphavantage.co/query"
 stock_params = {
     "function": "TIME_SERIES_DAILY_ADJUSTED",
     "symbol": STOCK,
-    # "interval": "60min",
     "apikey": STOCK_API_KEY,
 }
 
 ## NEWS CONSTANTS
-NEWS_API_KEY = "f2afce7041774fbf9744e84c8415b567"
+NEWS_API_KEY = "XXXXXXXXXXX"            #Your newsapi.org's API KEY
 NEWS_ENDPOINT = "https://newsapi.org/v2/everything"
 news_params = {
     "q": COMPANY_NAME,
@@ -44,7 +44,7 @@ difference = abs(before_yesterday_price-yesterday_price)
 ## STEP 2: Use https://newsapi.org
 # Instead of printing ("Get News"), actually get the first 3 news pieces for the COMPANY_NAME.
 
-if before_yesterday_price*0.05 <= difference:
+if before_yesterday_price*(REQUIRED_CHANGE/100) <= difference:
     percentage_change = int((difference * 100) / before_yesterday_price)
     if before_yesterday_price - yesterday_price > 0:
         stock_symbol = f"UP {percentage_change}%"
@@ -53,8 +53,8 @@ if before_yesterday_price*0.05 <= difference:
     news_response = requests.get(NEWS_ENDPOINT, params=news_params)
     news_response.raise_for_status()
     articles = news_response.json()['articles']
+    
     # headlines coleection
-
     news_headline1 = articles[0]['title']
     news_brief1 = articles[0]['description']
     news_headline2 = articles[1]['title']
